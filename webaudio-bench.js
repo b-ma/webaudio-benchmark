@@ -104,18 +104,25 @@ function getSpecificFile(spec) {
 function allDone() {
   document.getElementById("in-progress").style.display = "none";
   var result = document.getElementById("results");
-  var str = "<table><thead><tr><td>Test name</td><td>Time in ms</td><td>Speedup vs. realtime</td><td>Sound</td></tr></thead>";
+  // var str = "<table><thead><tr><td>Test name</td><td>Time in ms</td><td>Speedup vs. realtime</td><td>Sound</td></tr></thead>";
   var buffers_base = buffers.length;
   var product_of_durations = 1.0;
 
+  var str = ``
+
+  str += '+ id      | name                                                                     | duration (ms) | Speedup vs. realtime  | buffer.duration (s)</br>';
+
   for (var i = 0 ; i < results.length; i++) {
     var r = results[i];
+
+    str += `+ ${i}      | ${r.name} \t| ${r.duration} \t| ${Math.round((r.buffer.duration * 1000) / r.duration)}x \t| ${r.buffer.duration}</br>`;
+
     product_of_durations *= r.duration;
-    str += "<tr><td>" + r.name + "</td>" +
-               "<td>" + r.duration + "</td>"+
-               "<td>" + Math.round((r.buffer.duration * 1000) / r.duration) + "x</td>"+
-               "<td><button data-soundindex="+(buffers_base + i)+">Play</button> ("+r.buffer.duration+"s)</td>"
-          +"</tr>";
+    // str += "<tr><td>" + r.name + "</td>" +
+    //            "<td>" + r.duration + "</td>"+
+    //            "<td>" + Math.round((r.buffer.duration * 1000) / r.duration) + "x</td>"+
+    //            "<td><button data-soundindex="+(buffers_base + i)+">Play</button> ("+r.buffer.duration+"s)</td>"
+    //       +"</tr>";
     buffers[buffers_base + i] = r.buffer;
   }
   recordResult({
@@ -125,6 +132,7 @@ function allDone() {
   });
   str += "</table>";
   result.innerHTML += str;
+
   result.addEventListener("click", function(e) {
     var t = e.target;
     if (t.dataset.soundindex != undefined) {
